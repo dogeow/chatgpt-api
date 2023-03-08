@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ChatController extends Controller
 {
@@ -47,6 +48,9 @@ class ChatController extends Controller
         ]);
 
         $result = json_decode((string) $response->getBody(), true);
+
+        Log::info($request->input('content'));
+        Log::info($result);
 
         return $result['choices'][0]['message']['content'];
     }
