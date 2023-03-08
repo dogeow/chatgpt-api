@@ -7,6 +7,7 @@ use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpFoundation\HeaderUtils;
 
 class ChatController extends Controller
 {
@@ -51,7 +52,6 @@ class ChatController extends Controller
 
         Log::info($request->input('content'));
 
-        // 设置响应头
         $response = new StreamedResponse(function () use ($response) {
             while (!$response->getBody()->eof()) {
                 echo $response->getBody()->read(4096);
@@ -60,9 +60,15 @@ class ChatController extends Controller
             }
         });
 
-        $response->headers->set('Content-Type', 'application/octet-stream');
-        $response->headers->set('Transfer-Encoding', 'chunked');
-        $response->headers->set('Connection', 'keep-alive');
+        $headers = [
+            'Content-Type' => 'application/octet-stream',
+            'Transfer-Encoding' => 'chunked',
+            'Connection' => 'keep-alive',
+        ];
+
+        $mergedHeaders = array_merge($response->headers->all(), $headers);
+
+        $response->headers->replace($mergedHeaders);
 
         $response->sendHeaders();
 
