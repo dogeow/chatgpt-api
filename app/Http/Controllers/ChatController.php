@@ -60,7 +60,7 @@ class ChatController extends Controller
             }
         });
 
-        $response->headers->set('Content-Type', 'application/json');
+        $response->headers->set('Content-Type', 'application/octet-stream');
         $response->headers->set('Transfer-Encoding', 'chunked');
         $response->headers->set('Connection', 'keep-alive');
 
