@@ -51,10 +51,10 @@ class ChatController extends Controller
 
         Log::info($request->input('content'));
 
-        $stream = $response->getBody();
-        $response = new StreamedResponse(function () use ($stream) {
-            while (!$stream->eof()) {
-                echo $stream->read(1024);
+        // 设置响应头
+        $response = new StreamedResponse(function () use ($response) {
+            while (!$response->getBody()->eof()) {
+                echo $response->getBody()->read(1024);
                 ob_flush();
                 flush();
             }
@@ -66,5 +66,4 @@ class ChatController extends Controller
 
         return $response->send();
     }
-
 }
