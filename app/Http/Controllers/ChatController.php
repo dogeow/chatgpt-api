@@ -18,7 +18,7 @@ class ChatController extends Controller
      * @return string
      * @throws GuzzleException
      */
-    public function __invoke(Request $request): string
+    public function ai(Request $request): string
     {
         $request->validate([
             'content' => ['required', 'string', 'max:2048'],
