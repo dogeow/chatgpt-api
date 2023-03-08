@@ -35,6 +35,7 @@ class ChatController extends Controller
 
         $body = [
             'model' => 'gpt-3.5-turbo',
+            'stream' => true,
             'messages' => [
                 ['role' => 'user', 'content' => $request->input('content')],
             ],
