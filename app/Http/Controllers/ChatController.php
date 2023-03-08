@@ -51,10 +51,17 @@ class ChatController extends Controller
 
         Log::info($request->input('content'));
 
-        return response()->stream(function () use ($response) {
-            echo $response->getBody();
-        }, 200, [
-            'Content-Type' => 'application/octet-stream',
-        ]);
+        // 创建 StreamedResponse 对象
+        $streamedResponse = new StreamedResponse(function() use ($response) {
+            // 将 Guzzle 的响应流输出到输出缓冲区
+            while (!$response->getBody()->eof()) {
+                echo $response->getBody()->read(1024);
+            }
+        });
+
+        // 设置响应头信息
+        $streamedResponse->headers->set('Content-Type', 'application/octet-stream');
+
+        return $streamedResponse;
     }
 }
