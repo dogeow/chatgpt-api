@@ -53,6 +53,8 @@ class ChatController extends Controller
 
         return response()->stream(function () use ($response) {
             echo $response->getBody();
-        });
+        }, 200, [
+            'Content-Type' => 'application/octet-stream',
+        ]);
     }
 }
