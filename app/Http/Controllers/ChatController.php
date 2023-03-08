@@ -54,7 +54,7 @@ class ChatController extends Controller
         // 设置响应头
         $response = new StreamedResponse(function () use ($response) {
             while (!$response->getBody()->eof()) {
-                echo $response->getBody()->read(1024);
+                echo $response->getBody()->read(4096);
                 ob_flush();
                 flush();
             }
@@ -63,6 +63,8 @@ class ChatController extends Controller
         $response->headers->set('Content-Type', 'application/octet-stream');
         $response->headers->set('Transfer-Encoding', 'chunked');
         $response->headers->set('Connection', 'keep-alive');
+
+        $response->sendHeaders();
 
         return $response->send();
     }
