@@ -6,6 +6,7 @@ use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ChatController extends Controller
 {
@@ -45,13 +46,20 @@ class ChatController extends Controller
         $response = $client->post(self::API_URL, [
             'headers' => $headers,
             'json' => $body,
+            'stream' => true
         ]);
 
-        $result = json_decode((string) $response->getBody(), true);
-
         Log::info($request->input('content'));
-        Log::info($result);
 
-        return $result['choices'][0]['message']['content'];
+        $streamedResponse = new StreamedResponse(function() use ($response) {
+            while (!$response->getBody()->eof()) {
+                Log::info($response->getBody());
+                echo $response->getBody()->read(1024);
+            }
+        });
+
+        $streamedResponse->headers->set('Content-Type', 'application/octet-stream');
+
+        return $streamedResponse;
     }
 }
