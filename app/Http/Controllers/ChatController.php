@@ -51,15 +51,8 @@ class ChatController extends Controller
 
         Log::info($request->input('content'));
 
-        $streamedResponse = new StreamedResponse(function() use ($response) {
-            while (!$response->getBody()->eof()) {
-                Log::info($response->getBody());
-                echo $response->getBody()->read(1024);
-            }
+        return response()->stream(function () use ($response) {
+            echo $response->getBody();
         });
-
-        $streamedResponse->headers->set('Content-Type', 'application/octet-stream');
-
-        return $streamedResponse;
     }
 }
