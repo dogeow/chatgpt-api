@@ -58,10 +58,5 @@ class ChatController extends Controller
                 echo $response->getBody()->read(1024);
             }
         });
-
-        // 设置响应头信息
-        $streamedResponse->headers->set('Content-Type', 'application/octet-stream');
-
-        return $streamedResponse;
     }
 }
