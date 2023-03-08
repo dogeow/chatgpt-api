@@ -51,12 +51,21 @@ class ChatController extends Controller
 
         Log::info($request->input('content'));
 
-        // 创建 StreamedResponse 对象
-        $streamedResponse = new StreamedResponse(function() use ($response) {
-            // 将 Guzzle 的响应流输出到输出缓冲区
-            while (!$response->getBody()->eof()) {
-                echo $response->getBody()->read(1024);
+     // stream 响应
+        $stream = $response->getBody();
+        $response = new StreamedResponse(function () use ($stream) {
+            while (!$stream->eof()) {
+                echo $stream->read(1024);
+                ob_flush();
+                flush();
             }
         });
+
+        $response->headers->set('Content-Type', 'application/json');
+        $response->headers->set('Transfer-Encoding', 'chunked');
+        $response->headers->set('Connection', 'keep-alive');
+
+        return $response->send();
     }
+
 }
