@@ -21,7 +21,7 @@ class ChatController extends Controller
      * @return string
      * @throws GuzzleException
      */
-    public function ai(Request $request): string
+    public function ai(Request $request)
     {
         $request->validate([
             'content' => ['required', 'string', 'max:2048'],
@@ -52,26 +52,12 @@ class ChatController extends Controller
 
         Log::info($request->input('content'));
 
-        $response = new StreamedResponse(function () use ($response) {
+        return new StreamedResponse(function () use ($response) {
             while (!$response->getBody()->eof()) {
-                echo $response->getBody()->read(4096);
+                echo $response->getBody()->read(1);
                 ob_flush();
                 flush();
             }
         });
-
-        $headers = [
-            'Content-Type' => 'application/octet-stream',
-            'Transfer-Encoding' => 'chunked',
-            'Connection' => 'keep-alive',
-        ];
-
-        $mergedHeaders = array_merge($response->headers->all(), $headers);
-
-        $response->headers->replace($mergedHeaders);
-
-        $response->sendHeaders();
-
-        return $response->send();
     }
 }
