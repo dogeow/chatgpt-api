@@ -37,6 +37,6 @@ class Post extends Command
 
         $response = $client->post(ChatService::API_URL, $chatService->getParams($content, false));
 
-        dd($response);
+        dd($response->getBody()->getContents());
     }
 }
