@@ -41,24 +41,31 @@ class Post extends Command
             $body = $response->getBody()->getContents();
 
             if (empty($body)) {
+                $this->error('empty body');
                 sleep(1);
                 continue;
             }
 
             $arr = json_decode($body, true);
             if (! isset($arr['choices'][0])) {
+                $this->error('empty choices');
                 sleep(1);
                 continue;
             }
 
             if (! isset($arr['choices'][0]['message']['content'])) {
+                $this->error('empty content');
                 sleep(1);
                 continue;
             }
 
+            $this->line('+');
+
             \App\Models\Post::create([
                 'text' => $arr['choices'][0]['message']['content'],
             ]);
+
+            sleep(1);
         }
     }
 }
