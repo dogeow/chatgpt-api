@@ -38,8 +38,26 @@ class Post extends Command
         while (true) {
             $response = $client->post(ChatService::API_URL, $chatService->getParams($content, false));
 
+            $body = $response->getBody()->getContents();
+
+            if (empty($body)) {
+                sleep(1);
+                continue;
+            }
+
+            $arr = json_decode($body, true);
+            if (! isset($arr['choices'][0])) {
+                sleep(1);
+                continue;
+            }
+
+            if (! isset($arr['choices'][0]['message']['content'])) {
+                sleep(1);
+                continue;
+            }
+
             \App\Models\Post::create([
-                'text' => $response->getBody()->getContents(),
+                'text' => $arr['choices'][0]['message']['content'],
             ]);
         }
     }
