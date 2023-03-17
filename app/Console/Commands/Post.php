@@ -42,7 +42,7 @@ class Post extends Command
 
             if (empty($body)) {
                 $this->error('empty body');
-                print_r($arr);
+                print_r($body);
                 exit;
             }
 
