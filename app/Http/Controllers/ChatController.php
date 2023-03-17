@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\ChatService;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\Request;
@@ -11,49 +12,31 @@ use Symfony\Component\HttpFoundation\HeaderUtils;
 
 class ChatController extends Controller
 {
-    const API_URL = 'https://api.openai.com/v1/chat/completions';
-    const TIMEOUT = 60;
-
     /**
      * todo 对话功能，参数调节功能，限流
      * 不记录用户隐私（说了什么，返回了什么），只记录使用时间、token 使用量
      * @param  Request  $request
-     * @return string
+     * @return StreamedResponse
      * @throws GuzzleException
      */
-    public function ai(Request $request)
+    public function ai(Request $request): StreamedResponse
     {
         $request->validate([
             'content' => ['required', 'string', 'max:2048'],
         ]);
 
         $client = new GuzzleClient([
-            'timeout' => self::TIMEOUT,
+            'timeout' => ChatService::TIMEOUT,
         ]);
 
-        $headers = [
-            'Content-Type' => 'application/json',
-            'Authorization' => 'Bearer '.config('services.openai.api_key'),
-        ];
+        $chatService = new ChatService();
 
-        $body = [
-            'model' => 'gpt-3.5-turbo',
-            'stream' => true,
-            'messages' => [
-                ['role' => 'user', 'content' => $request->input('content')],
-            ],
-        ];
-
-        $response = $client->post(self::API_URL, [
-            'headers' => $headers,
-            'json' => $body,
-            'stream' => true
-        ]);
+        $response = $client->post(ChatService::API_URL, $chatService->getParams($request->input('content'), true));
 
         Log::info($request->input('content'));
 
         return new StreamedResponse(function () use ($response) {
-            while (!$response->getBody()->eof()) {
+            while (! $response->getBody()->eof()) {
                 echo $response->getBody()->read(1);
                 ob_flush();
                 flush();
