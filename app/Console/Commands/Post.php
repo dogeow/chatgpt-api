@@ -28,7 +28,7 @@ class Post extends Command
     public function handle(): void
     {
         $client = new GuzzleClient([
-            'timeout' => ChatService::TIMEOUT,
+            'timeout' => 120,
         ]);
 
         $chatService = new ChatService();
@@ -37,6 +37,8 @@ class Post extends Command
 
         $response = $client->post(ChatService::API_URL, $chatService->getParams($content, false));
 
-        dd($response->getBody()->getContents());
+        \App\Models\Post::create([
+            'text' => $response->getBody()->getContents(),
+        ]);
     }
 }
