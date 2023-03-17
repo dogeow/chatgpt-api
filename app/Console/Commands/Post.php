@@ -35,10 +35,12 @@ class Post extends Command
 
         $content = '写一篇文章，不低于800字。附上分类、标题、标签。';
 
-        $response = $client->post(ChatService::API_URL, $chatService->getParams($content, false));
+        while (true) {
+            $response = $client->post(ChatService::API_URL, $chatService->getParams($content, false));
 
-        \App\Models\Post::create([
-            'text' => $response->getBody()->getContents(),
-        ]);
+            \App\Models\Post::create([
+                'text' => $response->getBody()->getContents(),
+            ]);
+        }
     }
 }
