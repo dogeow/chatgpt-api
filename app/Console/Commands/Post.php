@@ -42,21 +42,21 @@ class Post extends Command
 
             if (empty($body)) {
                 $this->error('empty body');
-                sleep(1);
-                continue;
+                print_r($arr);
+                exit;
             }
 
             $arr = json_decode($body, true);
             if (! isset($arr['choices'][0])) {
                 $this->error('empty choices');
-                sleep(1);
-                continue;
+                print_r($arr);
+                exit;
             }
 
             if (! isset($arr['choices'][0]['message']['content'])) {
                 $this->error('empty content');
-                sleep(1);
-                continue;
+                print_r($arr);
+                exit;
             }
 
             $this->line('+');
@@ -64,8 +64,6 @@ class Post extends Command
             \App\Models\Post::create([
                 'text' => $arr['choices'][0]['message']['content'],
             ]);
-
-            sleep(1);
         }
     }
 }
