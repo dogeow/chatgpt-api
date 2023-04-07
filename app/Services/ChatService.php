@@ -39,7 +39,7 @@ class ChatService
      * @param  bool  $stream
      * @return array
      */
-    public function getParams(string $content, bool $stream): array
+    public function getOptions(string $content, bool $stream): array
     {
         return [
             'headers' => $this->header,

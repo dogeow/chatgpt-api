@@ -31,9 +31,12 @@ class ChatController extends Controller
 
         $chatService = new ChatService();
 
-        $response = $client->post(ChatService::API_URL, $chatService->getParams($request->input('content'), true));
+        $options = $chatService->getOptions($request->input('content'), true);
+
+        $response = $client->post(ChatService::API_URL, $options);
 
         Log::info($request->input('content'));
+        Log::debug('选项', $options);
 
         return new StreamedResponse(function () use ($response) {
             while (! $response->getBody()->eof()) {
