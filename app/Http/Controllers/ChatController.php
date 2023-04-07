@@ -22,11 +22,11 @@ class ChatController extends Controller
     public function ai(Request $request): StreamedResponse
     {
         $request->validate([
-            'content' => ['required', 'string', 'max:2048'],
+            'content' => ['required', 'string', 'max:4096'],
         ]);
 
         $client = new GuzzleClient([
-            'timeout' => ChatService::TIMEOUT,
+            'timeout' => config('services.openai.timeout'),
         ]);
 
         Log::info($request->input('content'));

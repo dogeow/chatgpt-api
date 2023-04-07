@@ -23,8 +23,9 @@ cd chatgpt-api
 composer i
 cp .env.example .env
 vim .env
-# 填写最下面的 OPENAI_API_KEY 和 FRONTEND_URL
+# 填写最下面的 OPENAI_API_KEY、OPENAI_TIMEOUT 和 FRONTEND_URL
 # FRONTEND_URL 是你的前端地址，用于 CORS
+# OPENAI_TIMEOUT 是请求超时时间，单位秒
 php artisan optimize # 可选
 ```
 

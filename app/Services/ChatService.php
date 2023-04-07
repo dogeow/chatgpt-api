@@ -5,7 +5,6 @@ namespace App\Services;
 class ChatService
 {
     const API_URL = 'https://api.openai.com/v1/chat/completions';
-    const TIMEOUT = 60;
     const MODEL = 'gpt-3.5-turbo';
 
     public array $header;
