@@ -29,14 +29,14 @@ class ChatController extends Controller
             'timeout' => ChatService::TIMEOUT,
         ]);
 
+        Log::info($request->input('content'));
+
         $chatService = new ChatService();
 
         $options = $chatService->getOptions($request->input('content'), true);
-
-        $response = $client->post(ChatService::API_URL, $options);
-
-        Log::info($request->input('content'));
         Log::debug('选项', $options);
+        
+        $response = $client->post(ChatService::API_URL, $options);
 
         return new StreamedResponse(function () use ($response) {
             while (! $response->getBody()->eof()) {
