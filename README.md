@@ -22,7 +22,10 @@ git clone https://github.com/dogeow/chatgpt-api.git
 cd chatgpt-api
 composer i
 cp .env.example .env
-# 填写下最下面的 OPENAI_API_KEY=
+vim .env
+# 填写最下面的 OPENAI_API_KEY 和 FRONTEND_URL
+# FRONTEND_URL 是你的前端地址，用于 CORS
+php artisan optimize # 可选
 ```
 
 ## 使用
