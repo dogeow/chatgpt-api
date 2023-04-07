@@ -35,7 +35,7 @@ class ChatController extends Controller
 
         $options = $chatService->getOptions($request->input('content'), true);
         Log::debug('选项', $options);
-        
+
         $response = $client->post(ChatService::API_URL, $options);
 
         return new StreamedResponse(function () use ($response) {
